@@ -4,9 +4,9 @@ import java.util.List;
 
 public class DBConnection {
     static String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
-    static String DB_URL = "jdbc:mariadb://localhost:3306/table_Name?useSSL=false";
-    static String USERNAME = "root";
-    static String PASSWORD = "qwerqwer";
+    static String DB_URL = "jdbc:mariadb://localhost:3306/DB명?useSSL=false";
+    static String USERNAME = "계정명";
+    static String PASSWORD = "비밀번호";
 
     static Connection connection = null;
     static Statement statement = null;
@@ -30,19 +30,20 @@ public class DBConnection {
         strSql.append("INSERT INTO ADDRESSCODE(CODE, CODENM, PRECODE, CODELEVEL) VALUES");
         int cnt = 0;
 
-        if("0".equals(level)) {
-            while (iterator.hasNext()) {
-                AddressCodeDVO addressCodeDVO = (AddressCodeDVO) iterator.next();
-                strSql.append("(");
-                strSql.append("'" + addressCodeDVO.getCtprvnCd() + "',");
-                strSql.append("'" + addressCodeDVO.getCtprvnNm() + "',");
-                strSql.append("'', 0)");
-            }
+
+        while (iterator.hasNext()) {
+            AddressCodeDVO addressCodeDVO = (AddressCodeDVO) iterator.next();
+            strSql.append("(");
+            strSql.append("'" + addressCodeDVO.getCode() + "',");
+            strSql.append("'" + addressCodeDVO.getCodeNm() + "',");
+            strSql.append("'" + addressCodeDVO.getPreCode() + "',");
+            strSql.append(addressCodeDVO.getCodeLevel() + ")");
 
             if(iterator.hasNext()){
                 strSql.append(",");
             } else {
                 strSql.append(";");
+                System.out.println(strSql);
                 try{
                     Class.forName(JDBC_DRIVER);
                     connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
@@ -57,16 +58,6 @@ public class DBConnection {
                     e.printStackTrace();
                 }
             }
-
-        } else if("1".equals(level)){
-            while (iterator.hasNext()) {
-                AddressCodeDVO addressCodeDVO = (AddressCodeDVO) iterator.next();
-                strSql.append("(");
-                strSql.append("'" + addressCodeDVO.getCtprvnCd() + "',");
-                strSql.append("'" + addressCodeDVO.getCtprvnNm() + "',");
-                strSql.append("'', 1)");
-            }
         }
     }
-
 }
