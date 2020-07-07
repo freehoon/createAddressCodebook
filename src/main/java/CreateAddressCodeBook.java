@@ -8,6 +8,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.List;
+
+
 
 public class CreateAddressCodeBook {
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
@@ -23,25 +26,34 @@ public class CreateAddressCodeBook {
         NodeList nodeList = document.getElementsByTagName("item");
         System.out.println("파싱할 리스트 수 : " + nodeList.getLength());
 
+        List<AddressCodeDVO> lists = null;
+        AddressCodeDVO addressCodeDVO = null;
+
         for(int i = 0 ; i < nodeList.getLength() ; i++) {
             Node node = nodeList.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE){
                 Element element = (Element) node;
                 System.out.println("##############################");
-                //System.out.println(element.getTextContent());
 
-//                NodeList itemNodeList = element.getElementsByTagName("ctprvnCd").item(0).getChildNodes();
-//                Node itemNode = (Node) itemNodeList.item(0);
-//                if(itemNode == null)
-//                    System.out.println("null");
-//                else
-//                    System.out.println(itemNode.getNodeValue());
+                addressCodeDVO.setCode(getTagValue("ctprvnCd", element));
+                addressCodeDVO.setCodeNm(getTagValue("ctprvnNm", element));
+                addressCodeDVO.setPreCode("");
+                addressCodeDVO.setCodeLevel("0");
                 System.out.println("ctprvnCd : " + getTagValue("ctprvnCd", element));
                 System.out.println("signguCd : " + getTagValue("signguCd", element));
                 System.out.println("signguNm : " + getTagValue("signguNm", element));
+
+                lists.add(addressCodeDVO);
             }
         }
+
+
+        //시도
+        DBConnection.insertAddressCode(lists, "0");
+
     }//main
+
+
 
     private static String getTagValue(String tag, Element element){
         NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
